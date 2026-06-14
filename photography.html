@@ -264,7 +264,7 @@
       </div>
 
       <p class="tagline fade-in stagger-2">
-        I build things that work (most of the time) — into systems, fintech, and deep learning.
+        Stuff I've done and places I've been.
       </p>
 
       <!-- EDIT: update these URLs if your handles change -->
@@ -284,6 +284,10 @@
         <a class="rail-link" href="mailto:woloszyn.shane@gmail.com">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Email
+        </a>
+        <a class="rail-link" href="resume.pdf" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+          Resume
         </a>
       </div>
 
@@ -329,15 +333,6 @@ const images = [
   "IMG_9874.jpg"
 ];
 const gallery = document.getElementById('gallery');
-
-// stella.jpg displayed full-width at the top
-const hero = document.createElement('div');
-hero.className = 'photo-item photo-item--hero';
-const heroImg = document.createElement('img');
-heroImg.src = 'images/stella.jpg';
-heroImg.alt = '';
-gallery.appendChild(hero);
-hero.appendChild(heroImg);
 
 images.forEach(f => {
   const d = document.createElement('div');
