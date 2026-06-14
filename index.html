@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shane Woloszyn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset & Base ────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #FAF6EF;
+      --ink:     #16161A;
+      --navy:    #15294B;
+      --navy-10: rgba(21,41,75,.10);
+      --navy-20: rgba(21,41,75,.20);
+      --green:   #3D8C5A;
+      --rail-w:  320px;
+      --gap:     48px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--navy);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ─── Layout ─────────────────────────────────────────────────────── */
+    .page {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Left rail */
+    .rail {
+      width: var(--rail-w);
+      min-width: var(--rail-w);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 56px 40px;
+      border-right: 1px solid var(--navy-20);
+      overflow: hidden;
+    }
+
+    /* Canvas fills rail background */
+    #dot-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .55;
+    }
+
+    .rail-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 56px var(--gap) 80px calc(var(--gap) + 8px);
+      max-width: 780px;
+    }
+
+    /* ─── Rail: Identity ─────────────────────────────────────────────── */
+    .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: clamp(2.2rem, 3.5vw, 3rem);
+      line-height: .96;
+      letter-spacing: -.01em;
+      color: var(--navy);
+      margin-bottom: 18px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: .75;
+      margin-bottom: 20px;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(61,140,90,.45); }
+      50%      { box-shadow: 0 0 0 5px rgba(61,140,90,0); }
+    }
+
+    .tagline {
+      font-size: 14px;
+      line-height: 1.55;
+      opacity: .7;
+      margin-bottom: 32px;
+      max-width: 230px;
+    }
+
+    /* ─── Rail: Links ────────────────────────────────────────────────── */
+    .rail-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: auto;
+    }
+    .rail-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--navy);
+      transition: opacity .2s;
+    }
+    .rail-link:hover { opacity: .6; text-decoration: none; }
+    .rail-link svg { opacity: .5; flex-shrink: 0; }
+
+    /* ─── Rail: Nav ──────────────────────────────────────────────────── */
+    .rail-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 32px;
+      border-top: 1px solid var(--navy-20);
+      margin-top: 40px;
+    }
+    .rail-nav a {
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: .5;
+      transition: opacity .2s;
+      padding: 3px 0;
+    }
+    .rail-nav a:hover,
+    .rail-nav a.active { opacity: 1; color: var(--navy); text-decoration: none; }
+
+    /* ─── Main: Sections ─────────────────────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--navy);
+      opacity: .5;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--navy-20);
+    }
+
+    .section { margin-bottom: 72px; }
+
+    /* ─── Experience entries ──────────────────────────────────────────── */
+    .exp-item {
+      padding-bottom: 36px;
+      margin-bottom: 36px;
+      border-bottom: 1px solid var(--navy-10);
+    }
+    .exp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .exp-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+    .exp-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink);
+      opacity: .4;
+      white-space: nowrap;
+    }
+    .exp-org {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--navy);
+      opacity: .6;
+      margin-bottom: 10px;
+      letter-spacing: .01em;
+    }
+    .exp-body {
+      font-size: 14px;
+      line-height: 1.68;
+      opacity: .75;
+    }
+
+    /* ─── Project entries ────────────────────────────────────────────── */
+    .proj-item {
+      padding-bottom: 32px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--navy-10);
+    }
+    .proj-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    .proj-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .proj-body {
+      font-size: 14px;
+      line-height: 1.68;
+      opacity: .75;
+      margin-bottom: 12px;
+    }
+    .proj-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0;
+    }
+    .proj-gh {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--navy);
+      opacity: .5;
+      transition: opacity .2s;
+      text-decoration: none;
+    }
+    .proj-gh:hover { opacity: 1; text-decoration: none; }
+    .proj-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--navy);
+      opacity: .6;
+      letter-spacing: .02em;
+    }
+    .proj-tag-sep {
+      width: 1px;
+      height: 10px;
+      background: var(--navy);
+      opacity: .25;
+      margin: 0 10px;
+      display: inline-block;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────────────────── */
+    .footer-note {
+      font-size: 12px;
+      opacity: .4;
+      line-height: 1.7;
+      padding-top: 32px;
+      border-top: 1px solid var(--navy-10);
+    }
+
+    /* ─── Entrance animation ──────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp .55s ease forwards;
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: none; }
+    }
+    .stagger-1 { animation-delay: .08s; }
+    .stagger-2 { animation-delay: .16s; }
+    .stagger-3 { animation-delay: .24s; }
+    .stagger-4 { animation-delay: .34s; }
+    .stagger-5 { animation-delay: .44s; }
+
+    /* ─── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 800px) {
+      .page { flex-direction: column; }
+      .rail {
+        width: 100%;
+        min-width: 0;
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--navy-20);
+        padding: 40px 24px 32px;
+      }
+      #dot-canvas { display: none; }
+      .main {
+        padding: 40px 24px 64px;
+        max-width: 100%;
+      }
+      .rail-links { flex-direction: row; flex-wrap: wrap; gap: 12px 20px; margin-bottom: 24px; }
+      .rail-nav { flex-direction: row; gap: 16px; margin-top: 24px; padding-top: 24px; }
+      .name { font-size: 2.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── Left Rail ─────────────────────────────────────────────── -->
+  <aside class="rail">
+    <canvas id="dot-canvas"></canvas>
+    <div class="rail-inner">
+
+      <h1 class="name fade-in stagger-1">Shane<br>Woloszyn</h1>
+
+      <div class="status fade-in stagger-2">
+        <span class="status-dot"></span>
+        currently building at Liberty Mutual
+      </div>
+
+      <p class="tagline fade-in stagger-2">
+        I build things that work (most of the time) — into systems, fintech, and deep learning.
+      </p>
+
+      <!-- EDIT: update these URLs if your handles change -->
+      <div class="rail-links fade-in stagger-3">
+        <a class="rail-link" href="https://github.com/shanewoloszyn" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </a>
+        <a class="rail-link" href="https://linkedin.com/in/shanewoloszyn" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+        <a class="rail-link" href="https://shanewoloszyn.com" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          shanewoloszyn.com
+        </a>
+        <a class="rail-link" href="mailto:woloszyn.shane@gmail.com">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email
+        </a>
+        <!-- EDIT: drop your resume PDF into this folder named "resume.pdf" -->
+        <a class="rail-link" href="resume.pdf" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+          Résumé
+        </a>
+      </div>
+
+      <nav class="rail-nav fade-in stagger-4">
+        <a href="index.html" class="active">Home</a>
+        <a href="photography.html">Photos</a>
+        <a href="mailto:woloszyn.shane@gmail.com">Contact</a>
+      </nav>
+
+    </div>
+  </aside>
+
+  <!-- ── Main Content ───────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- 01 Experience -->
+    <section class="section fade-in stagger-3">
+      <div class="section-label">01 &mdash; Experience</div>
+
+      <div class="exp-item">
+        <div class="exp-header">
+          <span class="exp-title">Software Engineering Intern</span>
+          <span class="exp-date">May 2026 – Present</span>
+        </div>
+        <div class="exp-org">Liberty Mutual Insurance Group</div>
+        <p class="exp-body">
+          Contributing to the Twilio Flex enterprise contact center platform supporting 20k+ concurrent agents — real-time call handling, compliance workflows, and performance analytics. Building backend logic and TypeScript/React UI for a Fair Credit Reporting Act disclosure system handling 4% of eligible calls at a 10M+ monthly-call center. Refactoring event fanout systems, simplifying architecture and reducing tech debt.
+        </p>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-header">
+          <span class="exp-title">Co-Founder &amp; Lead Developer</span>
+          <span class="exp-date">Dec 2025 – Present</span>
+        </div>
+        <div class="exp-org">Liora</div>
+        <p class="exp-body">
+          Founded and lead engineering for a hotel management platform serving independent properties — owning architecture, technical hiring, and product direction. Built the initial product in Java with Spark and Twilio. Selected for Purdue's VentureX accelerator with $5k funding.
+        </p>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-header">
+          <span class="exp-title">Undergraduate Researcher</span>
+          <span class="exp-date">Sep 2025 – Dec 2025</span>
+        </div>
+        <div class="exp-org">Purdue University &middot; West Lafayette, IN</div>
+        <p class="exp-body">
+          Built a VR cave simulation in Unity rendering LiDAR-collected geological data into an immersive walkthrough for classroom instruction and public outreach. Designed interactive elements that let students explore inaccessible cave systems, deployed across multiple Purdue outreach events.
+        </p>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-header">
+          <span class="exp-title">Independent Researcher</span>
+          <span class="exp-date">June 2024 – Feb 2025</span>
+        </div>
+        <div class="exp-org">University of New England &middot; Dr. Sylvain Jaume</div>
+        <p class="exp-body">
+          Designed and implemented a Conditional GAN (Python, PyTorch, NumPy) generating synthetic chest X-ray images for medical education. Validated outputs against ground-truth CT data; presented at the Summer Undergraduate Research Symposium.
+        </p>
+      </div>
+    </section>
+
+    <!-- 02 Projects -->
+    <section class="section fade-in stagger-4">
+      <div class="section-label">02 &mdash; Projects</div>
+
+      <div class="proj-item">
+        <div class="proj-name">C++ Limit Order Book Matching Engine</div>
+        <p class="proj-body">
+          My favorite project — doesn't use any real data, but works beautifully. Single-threaded matching engine hitting 2.43M orders/sec at sub-microsecond latency (p50 300ns). Price-time priority matching, partial fills, O(1) cancellation via hashmap-iterator locator, and IOC/FOK/Market order types. Exposed to Python via pybind11; validated with a 29-test pytest suite covering edge cases and invariant checks.
+        </p>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">c++</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">pybind11</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">pytest</span>
+          </div>
+          <a class="proj-gh" href="https://github.com/ShaneWoloszyn/cpp-matching-engine" target="_blank" rel="noopener">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            github
+          </a>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-name">Crypto Arbitrage Trading Dashboard</div>
+        <p class="proj-body">
+          Real-time arbitrage detector pulling live order-book data from 5+ exchanges via CCXT, flagging fee-aware profit opportunities. Backtested strategies on simulated paper trades across thousands of trades.
+        </p>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">python</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">streamlit</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">ccxt</span>
+          </div>
+          <a class="proj-gh" href="https://github.com/ShaneWoloszyn/CryptoArbitrageBot" target="_blank" rel="noopener">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            github
+          </a>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-name">File-Loading Operating System</div>
+        <p class="proj-body">
+          A bootloader and kernel with basic file read/write/edit in a simulated RAM disk. Implemented VGA text-mode output and PS/2 keyboard input via direct hardware ports, plus the real-mode → protected-mode transition with GDT setup.
+        </p>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">c</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">x86-assembly</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">git</span>
+          </div>
+          <a class="proj-gh" href="https://github.com/ShaneWoloszyn/BasicOS" target="_blank" rel="noopener">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            github
+          </a>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-name">Chest X-Ray CGAN</div>
+        <p class="proj-body">
+          Trained a Conditional GAN to generate synthetic chest X-rays conditioned on pathology labels (No Findings, Mass, Pneumonia), paired with an SRGAN to upscale outputs to diagnostic quality. Designed specifically for low memory — runs on a GTX 1050Ti, where most GANs can't. Presented at the SURE Symposium at UNE with Dr. Sylvain Jaume.
+        </p>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">python</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">tensorflow</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">keras</span>
+          </div>
+          <a class="proj-gh" href="https://github.com/ShaneWoloszyn/ChestXRayCGAN" target="_blank" rel="noopener">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            github
+          </a>
+        </div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-name">Image Segmentation Tool</div>
+        <p class="proj-body">
+          Interactive medical image annotation tool — place points, connect them into outlines, and export the result as an STL file for 3D modeling. Built for my chest X-ray research at UNE to explore segmentation approaches before moving to GANs.
+        </p>
+        <div class="proj-footer">
+          <div class="proj-tags">
+            <span class="proj-tag">javascript</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">gojs</span>
+            <span class="proj-tag-sep"></span>
+            <span class="proj-tag">stl</span>
+          </div>
+          <a class="proj-gh" href="https://github.com/ShaneWoloszyn/imageSegmentation" target="_blank" rel="noopener">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            github
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer note -->
+    <footer class="footer-note fade-in stagger-5">
+      Purdue University — B.S. Computer Science &amp; Economics, 2025–2028, John Martinson Honors College<br>
+      Python · Java · C · TypeScript · JavaScript · x86 Assembly &nbsp;·&nbsp; React · PyTorch · Spark · Twilio · REST APIs
+    </footer>
+
+  </main>
+</div>
+
+<!-- ── Cursor-reactive dot grid ─────────────────────────────────────────── -->
+<script>
+(function () {
+  const canvas  = document.getElementById('dot-canvas');
+  const rail    = canvas.parentElement;
+  const ctx     = canvas.getContext('2d');
+  const NAVY    = '#15294B';
+  const SPACING = 26;
+  const RADIUS  = 1.4;
+  const REACH   = 90;   // px of cursor influence
+  const SPEED   = 0.016; // drift amplitude speed
+
+  let W, H, cols, rows, dots = [];
+  let mx = -9999, my = -9999;
+  let rafId;
+  let t = 0;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize() {
+    const rect = rail.getBoundingClientRect();
+    W = canvas.width  = rect.width;
+    H = canvas.height = rect.height;
+    cols = Math.ceil(W / SPACING) + 1;
+    rows = Math.ceil(H / SPACING) + 1;
+    dots = [];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        dots.push({
+          x: c * SPACING,
+          y: r * SPACING,
+          phase: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    if (!reduced) t += SPEED;
+
+    for (const d of dots) {
+      // Gentle drift
+      const dx = reduced ? d.x : d.x + Math.sin(t + d.phase) * 2.5;
+      const dy = reduced ? d.y : d.y + Math.cos(t * .8 + d.phase) * 2.5;
+
+      // Cursor proximity → brighter + slightly larger
+      const distX = dx - mx;
+      const distY = dy - my;
+      const dist  = Math.sqrt(distX * distX + distY * distY);
+      const factor = Math.max(0, 1 - dist / REACH);
+
+      const alpha = 0.12 + factor * 0.55;
+      const r     = RADIUS + factor * 1.2;
+
+      ctx.beginPath();
+      ctx.arc(dx, dy, r, 0, Math.PI * 2);
+      ctx.fillStyle = NAVY;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    rafId = requestAnimationFrame(draw);
+  }
+
+  // Track mouse relative to rail
+  document.addEventListener('mousemove', e => {
+    const rect = rail.getBoundingClientRect();
+    mx = e.clientX - rect.left;
+    my = e.clientY - rect.top;
+  });
+  document.addEventListener('mouseleave', () => { mx = -9999; my = -9999; });
+
+  const ro = new ResizeObserver(resize);
+  ro.observe(rail);
+  resize();
+  draw();
+})();
+</script>
+
+</body>
+</html>
