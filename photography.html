@@ -183,6 +183,17 @@
       display: block;
     }
 
+    .photo-item--hero {
+      column-span: all;
+      margin-bottom: 10px;
+    }
+    .photo-item--hero img {
+      width: 100%;
+      max-height: 85vh;
+      object-fit: cover;
+      display: block;
+    }
+
     .photo-item img {
       width: 100%;
       display: block;
@@ -308,16 +319,26 @@ const images = [
   "IMG_4212.jpg","IMG_4662.jpg","IMG_4938.jpg","IMG_4968.jpg",
   "IMG_5045.jpg","IMG_5097.jpg","IMG_5149.jpg","IMG_5216.jpg",
   "IMG_5261.jpg","IMG_5446.jpg","IMG_5727.jpg","IMG_5812.jpg",
-  "IMG_5832_(1).jpg","IMG_6275.jpg","IMG_6323.jpg","IMG_6347.jpg",
-  "IMG_6367.jpg","IMG_6442.jpg","IMG_6572.jpg","IMG_6637.jpg",
-  "IMG_6647.jpg","IMG_6664.jpg","IMG_6917.jpg","IMG_7046.jpg",
-  "IMG_7194.jpg","IMG_7218.jpg","IMG_7259.jpg","IMG_7265.jpg",
-  "IMG_7327.jpg","IMG_7353.jpg","IMG_7442.jpg","IMG_7457.jpg",
-  "IMG_7514.jpg","IMG_7643.jpg","IMG_7707.jpg","IMG_7747.jpg",
-  "IMG_7986.jpg","IMG_8321.jpg","IMG_8607.jpg","IMG_8630.jpg",
-  "IMG_9044.jpg","IMG_9874.jpg"
+  "IMG_6275.jpg","IMG_6323.jpg","IMG_6347.jpg","IMG_6367.jpg",
+  "IMG_6442.jpg","IMG_6572.jpg","IMG_6637.jpg","IMG_6647.jpg",
+  "IMG_6664.jpg","IMG_6917.jpg","IMG_7046.jpg","IMG_7194.jpg",
+  "IMG_7218.jpg","IMG_7259.jpg","IMG_7265.jpg","IMG_7327.jpg",
+  "IMG_7353.jpg","IMG_7442.jpg","IMG_7457.jpg","IMG_7514.jpg",
+  "IMG_7643.jpg","IMG_7707.jpg","IMG_7747.jpg","IMG_7986.jpg",
+  "IMG_8321.jpg","IMG_8607.jpg","IMG_8630.jpg","IMG_9044.jpg",
+  "IMG_9874.jpg"
 ];
 const gallery = document.getElementById('gallery');
+
+// stella.jpg displayed full-width at the top
+const hero = document.createElement('div');
+hero.className = 'photo-item photo-item--hero';
+const heroImg = document.createElement('img');
+heroImg.src = 'images/stella.jpg';
+heroImg.alt = '';
+gallery.appendChild(hero);
+hero.appendChild(heroImg);
+
 images.forEach(f => {
   const d = document.createElement('div');
   d.className = 'photo-item';
